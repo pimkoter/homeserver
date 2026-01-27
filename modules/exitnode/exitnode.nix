@@ -16,7 +16,7 @@
 
   networking = {
     firewall = {
-      allowedTCPPorts = [41641]
+      allowedTCPPorts = [41641];
     };
   };
 }
