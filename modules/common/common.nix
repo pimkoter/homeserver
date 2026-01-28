@@ -40,7 +40,9 @@
     };
     openssh = {
       enable = true;
-      passwordAuthentication = false;
+      settings = {
+        PasswordAuthentication = false;
+      };
     };
     fail2ban = {
       enable = true;
