@@ -3,7 +3,7 @@
   networking = {
     useDHCP = false;
     networkmanager.enable = false;
-
+    enableIPv6 = false;
     interfaces.ens18.ipv4.addresses = [
       {
         address = "192.168.178.2";
