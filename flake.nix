@@ -31,7 +31,7 @@
     nixosConfigurations = {
       pihole = mkHost {name = "pihole";};
       exitnode = mkHost {name = "exitnode";};
-      minecraftserver = mkHost {name = "minecraftserver"};
+      minecraftserver = mkHost {name = "minecraftserver";};
       # jellyfin = mkHost {name = "jellyfin";};
     };
   };
