@@ -83,6 +83,10 @@
     download-buffer-size = 524288000;
   };
 
+  nixpkgs.config = {
+    allowUnfree = true;
+  };
+
   time.timeZone = "Europe/Amsterdam";
   i18n.defaultLocale = "en_US.UTF-8";
   security.sudo.wheelNeedsPassword = lib.mkDefault true;
