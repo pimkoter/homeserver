@@ -30,8 +30,8 @@
   in {
     nixosConfigurations = {
       pihole = mkHost {name = "pihole";};
+      n8n = mkHost {name = "n8n";};
       exitnode = mkHost {name = "exitnode";};
-      minecraftserver = mkHost {name = "minecraftserver";};
       # jellyfin = mkHost {name = "jellyfin";};
     };
   };
