@@ -11,11 +11,6 @@
     containers.nextcloud-aio-mastercontainer = {
       image = "ghcr.io/nextcloud-releases/all-in-one:latest";
       autoStart = true;
-      dns = [
-        "100.100.100.100" # Tailscale magic dns
-        "127.0.0.1" # Local DNS Resolver
-      ];
-
       extraOptions = [
         "--init"
         "--sig-proxy=false"

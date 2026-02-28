@@ -1,5 +1,4 @@
 {lib, ...}: {
-  services.resolved.enable = lib.mkForce false;
   networking = {
     useDHCP = false;
     networkmanager.enable = false;
