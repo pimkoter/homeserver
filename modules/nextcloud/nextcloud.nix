@@ -2,10 +2,13 @@
   services = {
     nextcloud = {
       enable = true;
-      hostName = "nextcloud";
+      hostName = "localhost";
       appstoreEnable = true;
-      settings = {
+      config = {
+        adminpassFile = "/etc/nextcloud-admin-pass";
+        dbtype = "sqlite";
       };
     };
   };
+  environment.etc."netxtcloud-admin-pass".text = "pimiseenleukejongen";
 }
