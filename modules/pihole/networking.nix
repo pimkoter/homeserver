@@ -19,4 +19,10 @@
       allowedUDPPorts = [53 67 80 5335];
     };
   };
+
+  services = {
+    tailscale = {
+      enable = lib.mkForce false;
+    };
+  };
 }
