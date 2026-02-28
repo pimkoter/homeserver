@@ -1,7 +1,8 @@
-{
+{pkgs, ...}: {
   services = {
     nextcloud = {
       enable = true;
+      package = pkgs.nextcloud33;
       hostName = "localhost";
       appstoreEnable = true;
       config = {
