@@ -55,6 +55,7 @@
   environment.systemPackages = with pkgs; [
     neovim
     git
+    lazydocker
   ];
 
   programs.zsh = {
