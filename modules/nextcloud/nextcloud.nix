@@ -3,14 +3,15 @@
     nextcloud = {
       enable = true;
       package = pkgs.nextcloud33;
-      hostName = "localhost";
+      hostName = "192.168.178.3";
       appstoreEnable = true;
       config = {
         adminpassFile = "/etc/nextcloud-admin-pass";
         dbtype = "sqlite";
       };
       datadir = "/nextcloud";
+      settings.trusted_domains = ["192.168.178.3"];
     };
   };
-  environment.etc."netxtcloud-admin-pass".text = "pimiseenleukejongen";
+  environment.etc."nextcloud-admin-pass".text = "pimiseenleukejongen";
 }
