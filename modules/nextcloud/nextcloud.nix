@@ -9,6 +9,7 @@
         adminpassFile = "/etc/nextcloud-admin-pass";
         dbtype = "sqlite";
       };
+      datadir = "/nextcloud";
     };
   };
   environment.etc."netxtcloud-admin-pass".text = "pimiseenleukejongen";

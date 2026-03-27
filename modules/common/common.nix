@@ -79,6 +79,14 @@
     };
   };
 
+  virtualisation = {
+    oci-containers.backend = "docker";
+    docker = {
+      enable = true;
+      autoPrune.enable = true;
+    };
+  };
+
   nix.settings = {
     experimental-features = ["nix-command" "flakes"];
     download-buffer-size = 524288000;

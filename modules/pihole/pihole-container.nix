@@ -1,12 +1,4 @@
 {
-  virtualisation = {
-    oci-containers.backend = "docker";
-    docker = {
-      enable = true;
-      autoPrune.enable = true;
-    };
-  };
-
   virtualisation.oci-containers.containers = {
     pihole = {
       image = "pihole/pihole:latest";
