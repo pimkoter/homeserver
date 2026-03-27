@@ -10,7 +10,7 @@
         dbtype = "sqlite";
       };
       datadir = "/nextcloud";
-      settings.trusted_domains = ["192.168.178.3"];
+      settings.trusted_domains = ["192.168.178.3" "tailscale0"];
     };
   };
   environment.etc."nextcloud-admin-pass".text = "pimiseenleukejongen";
