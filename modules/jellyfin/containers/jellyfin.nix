@@ -3,7 +3,7 @@
   virtualisation = {
     oci-containers.containers = {
       "jellyfin" = {
-        image = "jellyfin/jellyfin:10.11.8";
+        image = "jellyfin/jellyfin";
         autoStart = true;
 
         volumes = [
