@@ -4,12 +4,14 @@
     oci-containers.containers = {
       "jellyfin" = {
         image = "jellyfin/jellyfin";
+        autoStart = true;
 
         volumes = [
-          "/cache/jellyfin:/cache:rw"
-          "/config/jellyfin:/config:rw"
-          "/media/movies:/media/movies:ro"
-          "/media/shows:/media/tv:ro"
+          "/logs/jellyfin:/log"
+          "/cache/jellyfin:/cache"
+          "/config/jellyfin:/config"
+          "/media/movies:/media/movies"
+          "/media/shows:/media/tv"
         ];
         ports = [
           "8096:8096/tcp"
@@ -17,11 +19,13 @@
         ];
         user = "1000:1000";
         log-driver = "journald";
+        #        environment = {
+        #          JELLYFIN_LOG_DIR = "log";
+        #        };
         extraOptions = [
           "--network-alias=jellyfin"
           "--network=jellyfin"
         ];
-        restart = ["unless-stopped"];
       };
     };
   };
