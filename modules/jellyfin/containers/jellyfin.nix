@@ -1,8 +1,6 @@
 {
   # Containers
   virtualisation = {
-    docker.networks.jellyfin = {};
-
     oci-containers.containers = {
       "jellyfin" = {
         image = "jellyfin/jellyfin:10.11.8";
