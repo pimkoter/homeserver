@@ -16,15 +16,9 @@
         ports = [
           "8096:8096/tcp"
         ];
-        user = "1000:1000";
-        log-driver = "journald";
         environment = {
           JELLYFIN_LOG_DIR = "log";
         };
-        extraOptions = [
-          "--network-alias=jellyfin"
-          "--network=jellyfin"
-        ];
       };
     };
   };
