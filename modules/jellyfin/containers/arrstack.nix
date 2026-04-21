@@ -3,7 +3,7 @@
   virtualisation = {
     oci-containers.containers = {
       "prowlarr" = {
-        image = "prowlarr/prowlarr";
+        image = "lscr.io/linuxserver/prowlarr:latest";
         autoStart = true;
 
         volumes = [
@@ -19,7 +19,7 @@
       };
 
       "radarr" = {
-        image = "radarr/radarr";
+        image = "lscr.io/linuxserver/radarr:latest";
         autoStart = true;
 
         volumes = [
@@ -37,7 +37,7 @@
       };
 
       "sonarr" = {
-        image = "sonarr/sonarr";
+        image = "lscr.io/linuxserver/sonarr:latest";
         autoStart = true;
 
         volumes = [
@@ -55,7 +55,7 @@
       };
 
       "qbittorrent" = {
-        image = "qbittorrent/qbittorrent";
+        image = "lscr.io/linuxserver/qbittorrent:latest";
         autoStart = true;
 
         volumes = [
@@ -72,7 +72,7 @@
       };
 
       "bazarr" = {
-        image = "bazarr/bazarr";
+        image = "lscr.io/linuxserver/bazarr:latest";
         autoStart = true;
 
         volumes = [
@@ -89,12 +89,12 @@
         };
       };
 
-      "jellyseerr" = {
-        image = "jellyseerr/jellyseerr";
+      "seerr" = {
+        image = "ghcr.io/seerr-team/seerr:latest";
         autoStart = true;
 
         volumes = [
-          "/config/jellyseerr:/config"
+          "/config/seerr:/config"
         ];
         ports = [
           "5055:5055/tcp"
