@@ -4,7 +4,6 @@
     oci-containers.containers = {
       "jellyfin" = {
         image = "jellyfin/jellyfin";
-        autoStart = true;
 
         volumes = [
           "/cache/jellyfin:/cache:rw"
@@ -22,6 +21,7 @@
           "--network-alias=jellyfin"
           "--network=jellyfin"
         ];
+        restart = ["unless-stopped"];
       };
     };
   };
