@@ -12,6 +12,10 @@
         ports = [
           "9696:9696/tcp"
         ];
+        environment = {
+          LOG_LEVEL = "debug";
+          TZ = "Europe/Amsterdam";
+        };
       };
 
       "radarr" = {
@@ -26,6 +30,10 @@
         ports = [
           "7878:7878/tcp"
         ];
+        environment = {
+          LOG_LEVEL = "debug";
+          TZ = "Europe/Amsterdam";
+        };
       };
 
       "sonarr" = {
@@ -40,6 +48,10 @@
         ports = [
           "8989:8989/tcp"
         ];
+        environment = {
+          LOG_LEVEL = "debug";
+          TZ = "Europe/Amsterdam";
+        };
       };
 
       "qbittorrent" = {
@@ -53,6 +65,10 @@
         ports = [
           "8080:8080/tcp"
         ];
+        environment = {
+          LOG_LEVEL = "debug";
+          TZ = "Europe/Amsterdam";
+        };
       };
 
       "bazarr" = {
@@ -67,6 +83,10 @@
         ports = [
           "6767:6767/tcp"
         ];
+        environment = {
+          LOG_LEVEL = "debug";
+          TZ = "Europe/Amsterdam";
+        };
       };
 
       "jellyseerr" = {
@@ -79,6 +99,10 @@
         ports = [
           "5055:5055/tcp"
         ];
+        environment = {
+          LOG_LEVEL = "debug";
+          TZ = "Europe/Amsterdam";
+        };
       };
     };
   };
