@@ -32,7 +32,7 @@
       pihole = mkHost {name = "pihole";};
       exitnode = mkHost {name = "exitnode";};
       nextcloud = mkHost {name = "nextcloud";};
-      # jellyfin = mkHost {name = "jellyfin";};
+      jellyfin = mkHost {name = "jellyfin";};
     };
   };
 }
