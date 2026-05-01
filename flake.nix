@@ -33,6 +33,7 @@
       exitnode = mkHost {name = "exitnode";};
       nextcloud = mkHost {name = "nextcloud";};
       jellyfin = mkHost {name = "jellyfin";};
+      forgejo = mkHost {name = "forgejo";};
     };
   };
 }
