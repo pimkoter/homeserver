@@ -17,7 +17,11 @@
               lib.nameValuePair "${serviceName}.${domain}" {
                 extraConfig = ''
                   tls internal
-                  reverse_proxy ${host.ip}:${toString service.port}
+                  reverse_proxy https://${host.ip}:${toString service.port} {
+                  transport http {
+                    tls_insecure_skip_verify
+                    }
+                  }
                 '';
               }
           )

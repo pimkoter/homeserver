@@ -5,8 +5,10 @@
         image = "pihole/pihole:2026.05.0";
         environment = {
           "TZ" = "Europe/Amsterdam";
+
           "FTLCONF_webserver_api_password" = "pimiseenleukejongen";
-          "ServerIP" = "192.168.178.2";
+          "FTLCONF_webserver_port" = "80";
+          "FTLCONF_webserver_sslcert" = "";
         };
         volumes = [
           "/home/pim/homeserver/modules/pihole/config/pihole:/etc/pihole:rw"
