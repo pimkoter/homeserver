@@ -12,7 +12,7 @@
           "/home/pim/homeserver/modules/pihole/config/pihole:/etc/pihole:rw"
         ];
         ports = [
-          "80:80/tcp"
+          "8080:80/tcp"
           "67:67/udp"
         ];
         extraOptions = [

@@ -17,7 +17,7 @@
       pihole = {
         ip = "192.168.178.2";
         services = {
-          pihole = {port = 80;};
+          pihole = {port = 8080;};
         };
       };
       jellyfin = {
