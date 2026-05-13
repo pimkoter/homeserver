@@ -1,4 +1,4 @@
-{
+{host, ...}: {
   virtualisation = {
     oci-containers.containers = {
       pihole = {
@@ -9,6 +9,7 @@
           "FTLCONF_webserver_api_password" = "pimiseenleukejongen";
           "FTLCONF_webserver_port" = "80";
           "FTLCONF_webserver_sslcert" = "";
+          "FTLCONF_dns_upstreams" = "127.0.0.1#5335";
         };
         volumes = [
           "/home/pim/homeserver/modules/pihole/config/pihole:/etc/pihole:rw"
