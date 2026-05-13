@@ -2,6 +2,7 @@
   lib,
   name,
   host,
+  hosts,
   ...
 }: let
   network = {
@@ -15,10 +16,15 @@ in {
 
   networking = {
     useDHCP = false;
+    nameservers = [
+      hosts.pihole.ip
+      "1.1.1.1"
+    ];
+
     networkmanager.enable = false;
 
     hostName = name;
-    domain = "home";
+    domain = network.domain;
 
     interfaces.${network.iface}.ipv4.addresses = [
       {
