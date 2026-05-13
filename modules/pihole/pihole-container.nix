@@ -17,7 +17,6 @@
           "53:53/udp"
         ];
         extraOptions = [
-          "--network=host"
           "--cap-add=NET_ADMIN"
         ];
         log-driver = "journald";
