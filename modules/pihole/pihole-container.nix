@@ -11,6 +11,10 @@
         volumes = [
           "/home/pim/homeserver/modules/pihole/config/pihole:/etc/pihole:rw"
         ];
+        ports = [
+          "80:80/tcp"
+          "67:67/udp"
+        ];
         extraOptions = [
           "--network=host"
           "--cap-add=NET_ADMIN"
