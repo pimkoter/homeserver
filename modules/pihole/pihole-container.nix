@@ -13,7 +13,8 @@
         ];
         ports = [
           "8080:80/tcp"
-          "67:67/udp"
+          "53:53/tcp"
+          "53:53/udp"
         ];
         extraOptions = [
           "--network=host"
