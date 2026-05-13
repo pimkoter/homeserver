@@ -1,5 +1,5 @@
 {
-  description = "The ultimate Homelab flake for different VMs";
+  description = "Koter's original love";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -8,32 +8,51 @@
   outputs = {
     self,
     nixpkgs,
+    ...
   }: let
     defaultSystem = "x86_64-linux";
     admin = "pim";
 
-    mkHost = {
-      name,
-      system ? defaultSystem,
-    }:
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = {
-          inherit name;
-          inherit admin;
+    hosts = {
+      pihole = {
+        ip = "192.168.178.2";
+        services = {
+          pihole = {port = 80;};
         };
+      };
+      jellyfin = {
+        ip = "192.168.178.4";
+        services = {
+          jellyfin = {port = 8096;};
+          prowlarr = {port = 8989;};
+        };
+      };
+      exitnode = {
+        ip = "192.168.178.9";
+      };
+      proxmox = {
+        ip = "192.168.178.10";
+        services = {
+          proxmox = {port = 8006;};
+        };
+      };
+    };
+    mkHost = name:
+      nixpkgs.lib.nixosSystem {
+        system = defaultSystem;
+
+        specialArgs = {
+          inherit name admin hosts;
+          host = hosts.${name};
+        };
+
         modules = [
           ./modules/common/default.nix
           ./modules/${name}/default.nix
         ];
       };
   in {
-    nixosConfigurations = {
-      pihole = mkHost {name = "pihole";};
-      exitnode = mkHost {name = "exitnode";};
-      nextcloud = mkHost {name = "nextcloud";};
-      jellyfin = mkHost {name = "jellyfin";};
-      forgejo = mkHost {name = "forgejo";};
-    };
+    nixosConfigurations =
+      nixpkgs.lib.mapAttrs (name: _: mkHost name) hosts;
   };
 }
