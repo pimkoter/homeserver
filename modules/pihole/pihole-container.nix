@@ -5,6 +5,7 @@
         image = "pihole/pihole:2026.05.0";
         environment = {
           "TZ" = "Europe/Amsterdam";
+          "FTLCONF_webserver_api_password" = "pimiseenleukejongen";
           "ServerIP" = "192.168.178.2";
         };
         volumes = [
