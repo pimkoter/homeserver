@@ -13,6 +13,7 @@
 
         value = {
           extraConfig = ''
+            tls internal
             reverse_proxy ${hostCfg.ip}:${toString serviceCfg.port}
           '';
         };
@@ -25,9 +26,9 @@
 in {
   services.caddy = {
     enable = true;
-    virtualHosts = virtualHosts;
     globalConfig = ''
-      auto_https off
+      auto_https disable_redirects
     '';
+    virtualHosts = virtualHosts;
   };
 }
