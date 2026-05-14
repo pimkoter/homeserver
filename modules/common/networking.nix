@@ -46,6 +46,6 @@ in {
   };
 
   security.pki.certificateFiles = [
-    "/etc/ssl/certs/caddy-root.crt"
+    "/etc/caddy-root.crt"
   ];
 }
