@@ -41,7 +41,11 @@ in {
 
     firewall = {
       enable = true;
-      trustedInterfaces = ["ens18" "tailscale0"];
+      trustedInterfaces = ["ens18" "tailscale0" "80" "443"];
     };
   };
+
+  security.pki.certificateFiles = [
+    "/etc/ssl/certs/caddy-root.crt"
+  ];
 }
