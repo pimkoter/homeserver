@@ -5,13 +5,13 @@
       environment = {
         "TZ" = "Europe/Amsterdam";
         "FTLCONF_webserver_api_password" = "pimiseenleukejongen";
-        "ServerIP" = "192.168.178.2";
+        "FTLCONF_webserver_port" = "8080o,4043os,[::]:8080o,[::]:4043os";
       };
       volumes = [
         "/home/pim/homeserver/modules/pihole/config/pihole:/etc/pihole:rw"
       ];
       ports = [
-        "80:80/tcp"
+        "8080:80/tcp"
         "67:67/udp"
       ];
       extraOptions = [
