@@ -25,7 +25,9 @@
 in {
   services.caddy = {
     enable = true;
-
     virtualHosts = virtualHosts;
+    globalConfig = ''
+      auto_https off
+    '';
   };
 }
