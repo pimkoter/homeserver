@@ -1,29 +1,24 @@
-{host, ...}: {
-  virtualisation = {
-    oci-containers.containers = {
-      pihole = {
-        image = "pihole/pihole:2026.05.0";
-        environment = {
-          "TZ" = "Europe/Amsterdam";
-
-          "FTLCONF_webserver_api_password" = "pimiseenleukejongen";
-          "FTLCONF_webserver_port" = "80";
-          "FTLCONF_webserver_sslcert" = "";
-          "FTLCONF_dns_upstreams" = "127.0.0.1#5335";
-        };
-        volumes = [
-          "/home/pim/homeserver/modules/pihole/config/pihole:/etc/pihole:rw"
-        ];
-        ports = [
-          "8080:80/tcp"
-          "53:53/tcp"
-          "53:53/udp"
-        ];
-        extraOptions = [
-          "--cap-add=NET_ADMIN"
-        ];
-        log-driver = "journald";
+{
+  virtualisation.oci-containers.containers = {
+    pihole = {
+      image = "pihole/pihole:latest";
+      environment = {
+        "TZ" = "Europe/Amsterdam";
+        "FTLCONF_webserver_api_password" = "pimiseenleukejongen";
+        "ServerIP" = "192.168.178.2";
       };
+      volumes = [
+        "/home/pim/homeserver/modules/pihole/config/pihole:/etc/pihole:rw"
+      ];
+      ports = [
+        "80:80/tcp"
+        "67:67/udp"
+      ];
+      extraOptions = [
+        "--network=host"
+        "--cap-add=NET_ADMIN"
+      ];
+      log-driver = "journald";
     };
   };
 }

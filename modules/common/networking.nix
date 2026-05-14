@@ -12,13 +12,17 @@
     domain = "home";
   };
 in {
-  services.resolved.enable = lib.mkForce false;
+  services = {
+    resolved.enable = lib.mkForce false;
+    tailscale = {
+      enable = true;
+    };
+  };
 
   networking = {
     useDHCP = false;
     nameservers = [
       hosts.pihole.ip
-      "1.1.1.1"
     ];
 
     networkmanager.enable = false;
@@ -37,7 +41,7 @@ in {
 
     firewall = {
       enable = true;
-      trustedInterfaces = ["ens18"];
+      trustedInterfaces = ["ens18" "tailscale0"];
     };
   };
 }
