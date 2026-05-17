@@ -9,17 +9,17 @@
     '';
 
     virtualHosts = {
-      "pihole.${hosts.domain}.arpa".extraConfig = ''
+      "pihole.${hosts.domain}".extraConfig = ''
         tls internal
         reverse_proxy http://${hosts.pihole.ip}:${hosts.pihole.services.pihole}
       '';
 
-      "jellyfin.${hosts.domain}.arpa".extraConfig = ''
+      "jellyfin.${hosts.domain}".extraConfig = ''
         tls internal
         reverse_proxy http://${hosts.jellyfin.ip}:${hosts.jellyfin.services.jellyfin}
       '';
 
-      "proxmox.${hosts.domain}.arpa".extraConfig = ''
+      "proxmox.${hosts.domain}".extraConfig = ''
         tls internal
         reverse_proxy http://${hosts.proxmox.ip}:${hosts.proxmox.services.proxmox}
       '';
