@@ -1,35 +1,12 @@
-{
-  lib,
-  hosts,
-  ...
-}: let
-  services = lib.flatten (
-    lib.mapAttrsToList (
-      _hostName: host:
-        lib.mapAttrsToList (
-          svcName: svc: {
-            name = svcName;
-            target = "${host.ip}:${toString svc.port}";
-          }
-        )
-        host.services
-    )
-    hosts
-  );
-in {
+{hosts, ...}: {
   services.caddy = {
     enable = true;
+    httpPort = 81;
+    httpsPort = 444;
 
-    virtualHosts = lib.listToAttrs (map (svc: {
-        name = "${svc.name}.${hosts.domain}";
-        value = {
-          extraConfig = ''
-            reverse_proxy ${svc.target}
-          '';
-        };
-      })
-      services);
+    virtualHosts."pihole.home".extraConfig = ''
+      reverse_proxy http://${hosts.pihole.ip}
+    '';
   };
-
   networking.firewall.allowedTCPPorts = [80 443];
 }
