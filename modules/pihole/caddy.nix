@@ -4,10 +4,12 @@
     httpPort = 81;
     httpsPort = 444;
 
+    globalConfig = ''
+      auto_https off
+    '';
+
     virtualHosts."pihole.home".extraConfig = ''
       tls internal
-      auto_https off
-
       reverse_proxy http://${hosts.pihole.ip}:${hosts.pihole.services.pihole}
     '';
   };
