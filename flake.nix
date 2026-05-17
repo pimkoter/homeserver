@@ -28,13 +28,16 @@
           prowlarr = "8989";
         };
       };
+      caddy = {
+        ip = "192.168.178.8";
+      };
       exitnode = {
         ip = "192.168.178.9";
       };
       proxmox = {
         ip = "192.168.178.10";
         services = {
-          proxmox = {port = 8006;};
+          proxmox = "8006";
         };
       };
     };

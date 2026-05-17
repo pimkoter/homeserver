@@ -1,9 +1,6 @@
 {hosts, ...}: {
   services.caddy = {
     enable = true;
-    httpPort = 81;
-    httpsPort = 444;
-
     globalConfig = ''
       auto_https off
     '';
