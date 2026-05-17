@@ -1,13 +1,12 @@
 {
   lib,
   hosts,
-  domain ? "home",
   ...
 }: let
   mkHosts = hostName: hostCfg:
     lib.mapAttrsToList (
       serviceName: serviceCfg:
-        lib.nameValuePair "${serviceName}.${domain}" {
+        lib.nameValuePair "${serviceName}.${hosts.domain}" {
           extraConfig = ''
             tls internal
             reverse_proxy ${hostCfg.ip}:${toString serviceCfg.port}

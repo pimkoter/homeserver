@@ -14,6 +14,7 @@
     admin = "pim";
 
     hosts = {
+      domain = "koter";
       pihole = {
         ip = "192.168.178.2";
         services = {
