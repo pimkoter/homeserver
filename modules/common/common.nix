@@ -29,7 +29,7 @@
     firewall = {
       enable = true;
       trustedInterfaces = ["tailscale0"];
-      allowedTCPPorts = lib.mkDefault [];
+      allowedTCPPorts = lib.mkDefault [80 443];
     };
   };
 
@@ -98,6 +98,5 @@
 
   time.timeZone = "Europe/Amsterdam";
   i18n.defaultLocale = "en_US.UTF-8";
-  security.sudo.wheelNeedsPassword = lib.mkDefault true;
   system.stateVersion = "25.11";
 }

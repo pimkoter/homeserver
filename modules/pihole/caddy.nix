@@ -1,36 +1,35 @@
 {
   lib,
   hosts,
-  pkgs,
   ...
 }: let
-  mkHosts = hostName: hostCfg:
+  services = lib.flatten (
     lib.mapAttrsToList (
-      serviceName: serviceCfg:
-        lib.nameValuePair "${serviceName}.${hosts.domain}" {
-          extraConfig = ''
-            tls internal
-            reverse_proxy ${hostCfg.ip}:${toString serviceCfg.port}
-          '';
-        }
-    ) (hostCfg.services or {});
+      _hostName: host:
+        lib.mapAttrsToList (
+          svcName: svc: {
+            name = svcName;
+            target = "${host.ip}:${toString svc.port}";
+          }
+        )
+        host.services
+    )
+    hosts
+  );
 in {
   services.caddy = {
     enable = true;
 
-    virtualHosts = builtins.listToAttrs (
-      lib.flatten (lib.mapAttrsToList mkHosts hosts)
-    );
+    virtualHosts = lib.listToAttrs (map (svc: {
+        name = "${svc.name}.${hosts.domain}";
+        value = {
+          extraConfig = ''
+            reverse_proxy ${svc.target}
+          '';
+        };
+      })
+      services);
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
-
-  environment = {
-    etc."dnsmasq.d/99-koter.conf".text = ''
-      address=/.koter/${hosts.pihole.ip}
-    '';
-    systemPackages = [
-      pkgs.nssTools
-    ];
-  };
 }
