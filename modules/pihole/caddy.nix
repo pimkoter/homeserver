@@ -5,7 +5,7 @@
     httpsPort = 444;
 
     virtualHosts."pihole.home".extraConfig = ''
-      reverse_proxy http://${hosts.pihole.ip}
+      reverse_proxy http://${hosts.pihole.ip}:${hosts.pihole.services.pihole.port}
     '';
   };
   networking.firewall.allowedTCPPorts = [80 443];
