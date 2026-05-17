@@ -1,24 +1,25 @@
 {
   lib,
   hosts,
+  domain ? "home",
   ...
 }: let
-  mkVirtualHost = hostName: hostCfg: let
-    default =
-      hostCfg.services.${hostCfg.defaultService};
-  in
-    lib.nameValuePair "${hostName}.koter" {
-      extraConfig = ''
-        tls internal
-        reverse_proxy ${hostCfg.ip}:${toString default.port}
-      '';
-    };
+  mkHosts = hostName: hostCfg:
+    lib.mapAttrsToList (
+      serviceName: serviceCfg:
+        lib.nameValuePair "${serviceName}.${domain}" {
+          extraConfig = ''
+            tls internal
+            reverse_proxy ${hostCfg.ip}:${toString serviceCfg.port}
+          '';
+        }
+    ) (hostCfg.services or {});
 in {
   services.caddy = {
     enable = true;
 
     virtualHosts = builtins.listToAttrs (
-      lib.mapAttrsToList mkVirtualHost hosts
+      lib.flatten (lib.mapAttrsToList mkHosts hosts)
     );
   };
 
