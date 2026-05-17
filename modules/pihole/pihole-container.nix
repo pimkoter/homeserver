@@ -11,11 +11,13 @@
         "/home/pim/homeserver/modules/pihole/config/pihole:/etc/pihole:rw"
       ];
       ports = [
-        "80:80/tcp"
+        "8080:80/tcp"
         "67:67/udp"
+        "53:53/tcp"
+        "53:53/udp"
+        "8443:443/udp"
       ];
       extraOptions = [
-        "--network=host"
         "--cap-add=NET_ADMIN"
       ];
       log-driver = "journald";
