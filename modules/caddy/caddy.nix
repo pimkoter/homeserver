@@ -21,7 +21,12 @@
 
       "proxmox.${hosts.domain}".extraConfig = ''
         tls internal
-        reverse_proxy https://${hosts.proxmox.ip}:${hosts.proxmox.services.proxmox}
+        reverse_proxy https://${hosts.proxmox.ip}:${hosts.proxmox.services.proxmox} {
+          transport http {
+            tls_insecure_skip_verify
+          }
+        }
+
       '';
     };
   };
