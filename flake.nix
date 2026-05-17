@@ -18,14 +18,14 @@
       pihole = {
         ip = "192.168.178.2";
         services = {
-          pihole = {port = 8080;};
+          pihole = "8080";
         };
       };
       jellyfin = {
         ip = "192.168.178.4";
         services = {
-          jellyfin = {port = 8096;};
-          prowlarr = {port = 8989;};
+          jellyfin = "8096";
+          prowlarr = "8989";
         };
       };
       exitnode = {
