@@ -1,6 +1,7 @@
 {
   lib,
   hosts,
+  pkgs,
   ...
 }: let
   mkHosts = hostName: hostCfg:
@@ -24,7 +25,12 @@ in {
 
   networking.firewall.allowedTCPPorts = [80 443];
 
-  environment.etc."dnsmasq.d/99-koter.conf".text = ''
-    address=/.koter/${hosts.pihole.ip}
-  '';
+  environment = {
+    etc."dnsmasq.d/99-koter.conf".text = ''
+      address=/.koter/${hosts.pihole.ip}
+    '';
+    systemPackages = [
+      pkgs.nssTools
+    ];
+  };
 }
