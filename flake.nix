@@ -21,7 +21,7 @@
         ip = "192.168.178.4";
         services = {
           jellyfin = "8096";
-          jellyseerr = "5055";
+          seerr = "5055";
           bazarr = "6767";
           radarr = "7878";
           sonarr = "8989";
