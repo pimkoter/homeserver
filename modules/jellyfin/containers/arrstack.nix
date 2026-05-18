@@ -20,7 +20,6 @@ in {
           PUID = "1000";
           PGID = "1000";
         };
-        network = [network];
       };
 
       "radarr" = {
@@ -41,7 +40,6 @@ in {
           PUID = "1000";
           PGID = "1000";
         };
-        network = [network];
       };
 
       "sonarr" = {
@@ -62,7 +60,6 @@ in {
           PUID = "1000";
           PGID = "1000";
         };
-        network = [network];
       };
 
       "qbittorrent" = {
@@ -84,7 +81,6 @@ in {
           PUID = "1000";
           PGID = "1000";
         };
-        network = [network];
       };
 
       "bazarr" = {
@@ -105,7 +101,6 @@ in {
           PUID = "1000";
           PGID = "1000";
         };
-        network = [network];
       };
 
       "seerr" = {
@@ -124,7 +119,6 @@ in {
           PUID = "1000";
           PGID = "1000";
         };
-        network = [network];
       };
     };
   };
