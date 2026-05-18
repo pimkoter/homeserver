@@ -61,6 +61,8 @@
         volumes = [
           "/config/qbittorrent:/config"
           "/media/downloads:/downloads"
+          "/media/movies:/movies"
+          "/media/shows:/shows"
         ];
         ports = [
           "8080:8080/tcp"
