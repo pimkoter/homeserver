@@ -94,7 +94,7 @@
         autoStart = true;
 
         volumes = [
-          "/config/seerr:/config"
+          "/config/seerr:/app/config"
         ];
         ports = [
           "5055:5055/tcp"

@@ -17,7 +17,8 @@
           "8096:8096/tcp"
         ];
         environment = {
-          JELLYFIN_LOG_DIR = "log";
+          LOG_LEVEL = "debug";
+          TZ = "Europe/Amsterdam";
         };
       };
     };
