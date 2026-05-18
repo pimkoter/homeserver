@@ -5,10 +5,6 @@
 }: {
   services.caddy = {
     enable = true;
-    globalConfig = ''
-      auto_https off
-    '';
-
     virtualHosts = {
       "pihole.${hosts.domain}".extraConfig = ''
         tls internal
