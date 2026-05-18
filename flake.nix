@@ -5,11 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    ...
-  }: let
+  outputs = {nixpkgs, ...}: let
     defaultSystem = "x86_64-linux";
     admin = "pim";
 
@@ -25,7 +21,12 @@
         ip = "192.168.178.4";
         services = {
           jellyfin = "8096";
-          prowlarr = "8989";
+          jellyseerr = "5055";
+          bazarr = "6767";
+          radarr = "7878";
+          sonarr = "8989";
+          qbittorrent = "8080";
+          prowlarr = "9696";
         };
       };
       caddy = {
