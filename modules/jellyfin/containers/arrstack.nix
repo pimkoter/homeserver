@@ -8,11 +8,6 @@ in {
   # Containers
   virtualisation = {
     oci-containers = {
-      networks = {
-        ${network} = {
-          type = "bridge";
-        };
-      };
       containers = {
         "prowlarr" = {
           image = "lscr.io/linuxserver/prowlarr:latest";
