@@ -15,6 +15,8 @@
         environment = {
           LOG_LEVEL = "debug";
           TZ = "Europe/Amsterdam";
+          PUID = 1000;
+          PGID = 1000;
         };
       };
 
@@ -33,6 +35,8 @@
         environment = {
           LOG_LEVEL = "debug";
           TZ = "Europe/Amsterdam";
+          PUID = 1000;
+          PGID = 1000;
         };
       };
 
@@ -51,6 +55,8 @@
         environment = {
           LOG_LEVEL = "debug";
           TZ = "Europe/Amsterdam";
+          PUID = 1000;
+          PGID = 1000;
         };
       };
 
@@ -70,6 +76,8 @@
         environment = {
           LOG_LEVEL = "debug";
           TZ = "Europe/Amsterdam";
+          PUID = 1000;
+          PGID = 1000;
         };
       };
 
@@ -88,6 +96,8 @@
         environment = {
           LOG_LEVEL = "debug";
           TZ = "Europe/Amsterdam";
+          PUID = 1000;
+          PGID = 1000;
         };
       };
 
@@ -104,6 +114,8 @@
         environment = {
           LOG_LEVEL = "debug";
           TZ = "Europe/Amsterdam";
+          PUID = 1000;
+          PGID = 1000;
         };
       };
     };
