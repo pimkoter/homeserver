@@ -85,6 +85,19 @@ in {
       };
     };
 
+    "flaresolverr" = {
+      image = "ghcr.io/flaresolverr/flaresolverr:latest";
+      autoStart = true;
+      extraOptions = ["--network=${network}"];
+      ports = [
+        "8191:8191/tcp"
+      ];
+      environment = {
+        LOG_LEVEL = "info";
+        TZ = "Europe/Amsterdam";
+      };
+    };
+
     "bazarr" = {
       image = "lscr.io/linuxserver/bazarr:latest";
       autoStart = true;
