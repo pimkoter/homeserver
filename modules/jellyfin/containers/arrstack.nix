@@ -119,7 +119,10 @@ in {
     "seerr" = {
       image = "ghcr.io/seerr-team/seerr:latest";
       autoStart = true;
-      extraOptions = ["--network=${network}"];
+      extraOptions = [
+        "--network=${network}"
+        "--init"
+      ];
       volumes = ["/config/seerr:/app/config"];
       ports = ["5055:5055/tcp"];
       environment = {
