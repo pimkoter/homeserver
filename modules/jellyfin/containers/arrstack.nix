@@ -1,4 +1,4 @@
-let
+{pkgs, ...}: let
   network = "arrstack";
 in {
   virtualisation.oci-containers.backend = "docker";
