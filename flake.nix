@@ -7,7 +7,10 @@
 
   outputs = {nixpkgs, ...}: let
     defaultSystem = "x86_64-linux";
-    admin = "pim";
+    admin = {
+      name = "pim";
+      pswd = "$6$VrOHvIFjn6HTuxUz$5gp2v0XFmRRx4eOv.X1EDiPXGyUD/OKYVByhUK609iuIZsxzW9l0fkbxmo9w1SNCzxbSD0DAj0gUeNQOSQwJX/";
+    };
 
     hosts = {
       domain = "puber";

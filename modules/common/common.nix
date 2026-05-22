@@ -5,15 +5,16 @@
   name,
   ...
 }: {
-  users.users.${admin} = {
+  users.users.${admin.name} = {
     isNormalUser = true;
+    hashedPassword = "${admin.pswd}";
     extraGroups = [
       "wheel"
       "networkmanager"
       "docker"
     ];
     openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhphwXEOkJNBVIZ12mCxz+KFbf5PaU0N1KX3hyWQRBN ${admin}@NixBTW"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDhphwXEOkJNBVIZ12mCxz+KFbf5PaU0N1KX3hyWQRBN ${admin.name}@NixBTW"
     ];
     shell = pkgs.zsh;
   };
