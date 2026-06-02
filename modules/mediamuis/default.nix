@@ -1,8 +1,8 @@
 {
   imports = [
+    ./arrstack.nix
     ./drive.nix
+    ./immich.nix
     ./networking.nix
-    ./containers/jellyfin.nix
-    ./containers/arrstack.nix
   ];
 }
