@@ -1,9 +1,16 @@
-{
+let
+  immichDir = "/media/foto";
+in {
   services.immich = {
     enable = true;
-    port = 2283;
+    host = "0.0.0.0";
     openFirewall = true;
-    environment.IMMICH_LOG_LEVEL = "warn";
-    mediaLocation = "/media/foto";
+    mediaLocation = "${immichDir}";
+  };
+
+  systemd.services = {
+    immich-server.serviceConfig.ReadWritePaths = ["${immichDir}"];
+    immich-microservices.serviceConfig.ReadWritePaths = ["${immichDir}"];
+    immich-machine-learning.serviceConfig.ReadWritePaths = ["${immichDir}"];
   };
 }
