@@ -4,6 +4,6 @@
     port = 2283;
     openFirewall = true;
     environment.IMMICH_LOG_LEVEL = "warn";
-    mediaLocation = "/foto";
+    mediaLocation = "/media/foto";
   };
 }
