@@ -30,7 +30,7 @@
           sonarr = "8989";
           qbittorrent = "8080";
           prowlarr = "9696";
-          immich = "1212";
+          immich = "2283";
         };
       };
       caddy = {
