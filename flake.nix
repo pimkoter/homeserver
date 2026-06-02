@@ -20,7 +20,7 @@
           pihole = "80";
         };
       };
-      jellyfin = {
+      mediamuis = {
         ip = "192.168.178.4";
         services = {
           jellyfin = "8096";
@@ -30,6 +30,7 @@
           sonarr = "8989";
           qbittorrent = "8080";
           prowlarr = "9696";
+          immich = "1212";
         };
       };
       caddy = {
