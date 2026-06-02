@@ -13,37 +13,37 @@
 
       "jellyfin.${hosts.domain}".extraConfig = ''
         tls internal
-        reverse_proxy http://${hosts.jellyfin.ip}:${hosts.jellyfin.services.jellyfin}
+        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.jellyfin}
       '';
 
       "bazarr.${hosts.domain}".extraConfig = ''
         tls internal
-        reverse_proxy http://${hosts.jellyfin.ip}:${hosts.jellyfin.services.bazarr}
+        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.bazarr}
       '';
 
       "seerr.${hosts.domain}".extraConfig = ''
         tls internal
-        reverse_proxy http://${hosts.jellyfin.ip}:${hosts.jellyfin.services.seerr}
+        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.seerr}
       '';
 
       "qbittorrent.${hosts.domain}".extraConfig = ''
         tls internal
-        reverse_proxy http://${hosts.jellyfin.ip}:${hosts.jellyfin.services.qbittorrent}
+        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.qbittorrent}
       '';
 
       "radarr.${hosts.domain}".extraConfig = ''
         tls internal
-        reverse_proxy http://${hosts.jellyfin.ip}:${hosts.jellyfin.services.radarr}
+        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.radarr}
       '';
 
       "sonarr.${hosts.domain}".extraConfig = ''
         tls internal
-        reverse_proxy http://${hosts.jellyfin.ip}:${hosts.jellyfin.services.sonarr}
+        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.sonarr}
       '';
 
       "prowlarr.${hosts.domain}".extraConfig = ''
         tls internal
-        reverse_proxy http://${hosts.jellyfin.ip}:${hosts.jellyfin.services.prowlarr}
+        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.prowlarr}
       '';
 
       "proxmox.${hosts.domain}".extraConfig = ''
