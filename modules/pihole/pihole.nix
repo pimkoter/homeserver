@@ -117,12 +117,12 @@ in {
     };
 
     lists = [
-      {
-        # url = "HTTPS://LINK.txt";
-        # type = "block";
-        # enabled = true;
-        # description = "blocklist";
-      }
+      #{
+      # url = "HTTPS://LINK.txt";
+      # type = "block";
+      # enabled = true;
+      # description = "blocklist";
+      #}
       {
         url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/advertising.txt";
         type = "block";
