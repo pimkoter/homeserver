@@ -117,17 +117,12 @@ in {
     };
 
     lists = [
-      #{
-      # url = "HTTPS://LINK.txt";
-      # type = "block";
-      # enabled = true;
-      # description = "blocklist";
-      #}
+      # Lists can be added via URL
       {
         url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/all_domains.txt";
         type = "block";
         enabled = true;
-        description = "blocklist";
+        description = "ZachLagden Blocklist";
       }
     ];
   };
