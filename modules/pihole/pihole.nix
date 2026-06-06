@@ -125,4 +125,6 @@ in {
     hostName = "pihole.${networkDomain}";
     ports = ["80"];
   };
+
+  networking.firewall.allowedTCPPorts = [80];
 }
