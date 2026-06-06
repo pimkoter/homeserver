@@ -58,6 +58,7 @@
     neovim
     git
     lazydocker
+    lazygit
   ];
 
   programs.zsh = {
