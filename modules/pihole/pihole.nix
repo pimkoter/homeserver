@@ -139,8 +139,14 @@ in {
       RemainAfterExit = true;
       PrivateTmp = false; # Moet op false staan om de systeembrede trust-store live te mogen updaten
       ProtectHome = true;
-      ProtectSystem = "strict";
+      ProtectSystem = "true"; # Gewijzigd van "strict" naar "true" om /var schrijfbaar te maken
       NoNewPrivileges = true;
+
+      # Geef Systemd expliciet toestemming om in deze specifieke systeemmappen te schrijven
+      ReadWritePaths = [
+        "/var/lib"
+        "/etc/ssl/certs"
+      ];
     };
   };
 
