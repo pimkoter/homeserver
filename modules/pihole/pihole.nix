@@ -122,9 +122,14 @@ in {
   # -----------------------------
   services.pihole-web = {
     enable = true;
-    hostName = "pihole.${networkDomain}";
+    hostName = "127.0.0.1";
     ports = ["80"];
   };
 
-  networking.firewall.allowedTCPPorts = [80];
+  services.lighttpd.extraConfig = ''
+    server.document-root = "/var/www/html"
+    $HTTP["host"] =~ ".*" {
+        server.document-root = "/var/www/html"
+    }
+  '';
 }
