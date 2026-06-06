@@ -1,7 +1,6 @@
 {
   imports = [
-    ./cron.nix
-    ./pihole-container.nix
+    ./pihole.nix
     ./unbound.nix
   ];
 }

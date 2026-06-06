@@ -1,66 +1,108 @@
 {
   pkgs,
+  lib,
   hosts,
   ...
-}: {
+}: let
+  domain = hosts.domain or "local";
+
+  serverHosts =
+    lib.filterAttrs (
+      _: value:
+        lib.isAttrs value
+        && value ? services
+        && value ? ip
+    )
+    hosts;
+
+  allServices = lib.concatLists (
+    lib.mapAttrsToList (
+      _: hostCfg:
+        lib.mapAttrsToList (
+          serviceName: port:
+            assert (
+              builtins.isInt port
+              || builtins.isString port
+              || port == null
+            ); {
+              inherit serviceName port;
+              ip = hostCfg.ip;
+            }
+        )
+        hostCfg.services
+    )
+    serverHosts
+  );
+
+  virtualHosts = lib.listToAttrs (
+    map (
+      service: let
+        isProxmox = service.serviceName == "proxmox";
+
+        upstreamProto =
+          if isProxmox
+          then "https"
+          else "http";
+
+        upstreamPort =
+          if service.port == null || service.port == ""
+          then "80"
+          else toString service.port;
+
+        upstream = "${upstreamProto}://${service.ip}:${upstreamPort}";
+      in {
+        name = "${service.serviceName}.${domain}";
+
+        value = {
+          extraConfig = ''
+            reverse_proxy ${upstream}${lib.optionalString isProxmox ''
+              {
+                transport http {
+                  tls_insecure_skip_verify
+                }
+              }''}
+          '';
+        };
+      }
+    )
+    allServices
+  );
+
+  generatedNames =
+    map (s: "${s.serviceName}.${domain}") allServices;
+in {
   services.caddy = {
     enable = true;
-    virtualHosts = {
-      "pihole.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.pihole.ip}:${hosts.pihole.services.pihole}
-      '';
 
-      "jellyfin.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.jellyfin}
-      '';
+    globalConfig = ''
+      local_certs
+    '';
 
-      "bazarr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.bazarr}
-      '';
-
-      "seerr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.seerr}
-      '';
-
-      "qbittorrent.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.qbittorrent}
-      '';
-
-      "radarr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.radarr}
-      '';
-
-      "sonarr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.sonarr}
-      '';
-
-      "prowlarr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.prowlarr}
-      '';
-
-      "proxmox.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy https://${hosts.proxmox.ip}:${hosts.proxmox.services.proxmox} {
-          transport http {
-            tls_insecure_skip_verify
-          }
-        }
-      '';
-    };
+    inherit virtualHosts;
   };
+
   networking.firewall.allowedTCPPorts = [80 443];
 
   environment.systemPackages = with pkgs; [
-    nssTools
     caddy
+    nssTools
     p11-kit
+  ];
+
+  assertions = [
+    {
+      assertion =
+        lib.length generatedNames
+        == lib.length (lib.unique generatedNames);
+
+      message = ''
+        Duplicate service names detected.
+
+        Since hostnames are generated as:
+          <service>.${domain}
+
+        service names must be unique across all hosts.
+      '';
+    }
   ];
 }

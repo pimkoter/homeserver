@@ -18,6 +18,7 @@
         ip = "192.168.178.2";
         services = {
           pihole = "80";
+          cert = "";
         };
       };
       mediamuis = {
@@ -43,6 +44,13 @@
         ip = "192.168.178.10";
         services = {
           proxmox = "8006";
+        };
+      };
+      datadodo = {
+        ip = "192.168.178.3";
+        services = {
+          vaultwarden = "8222";
+          forgejo = "";
         };
       };
     };
