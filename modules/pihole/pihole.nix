@@ -269,7 +269,6 @@ in {
   # -----------------------------
   services.pihole-web = {
     enable = true;
-    openFirewallWebserver = true;
     hostName = "pihole.${networkDomain}";
     ports = ["80r" "443s"]; # 80r dwingt automatische redirect naar HTTPS af
   };
