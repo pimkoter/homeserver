@@ -11,13 +11,10 @@
   # Single source of truth
   # -----------------------------
   networkDomain = hosts.domain;
-
-  baseStateDir = config.services.pihole-ftl.stateDir;
-
+  baseStateDir = "/var/lib/pihole-ftl";
   certDir = "${baseStateDir}/certs";
   caDir = "${baseStateDir}/ca";
   publicCaDir = "${baseStateDir}/public-ca";
-
   piholeIp = hosts.pihole.ip;
 
   # -----------------------------
