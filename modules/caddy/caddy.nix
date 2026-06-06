@@ -4,61 +4,105 @@
   hosts,
   ...
 }: let
-  hostList = lib.filterAttrs (name: value: lib.isAttrs value && value ? services) hosts;
-  virtualHostsList =
+  domain = hosts.domain or "local";
+
+  serverHosts =
+    lib.filterAttrs (
+      _: value:
+        lib.isAttrs value
+        && value ? services
+        && value ? ip
+    )
+    hosts;
+
+  allServices = lib.concatLists (
     lib.mapAttrsToList (
-      hostName: hostCfg:
+      _: hostCfg:
         lib.mapAttrsToList (
-          serviceName: port: let
-            isProxmox = serviceName == "proxmox";
-            proto =
-              if isProxmox
-              then "https"
-              else "http";
-
-            extraBlock =
-              if isProxmox
-              then ''
-                transport http {
-                  tls_insecure_skip_verify
-                }
-              ''
-              else "";
-
-            finalPort =
-              if port == ""
-              then "80"
-              else port;
-          in {
-            name = "${serviceName}.${hosts.domain}";
-            value = {
-              extraConfig = ''
-                tls internal
-                reverse_proxy ${proto}://${hostCfg.ip}:${finalPort} ${
-                  if isProxmox
-                  then "{\n${extraBlock}}"
-                  else ""
-                }
-              '';
-            };
-          }
+          serviceName: port:
+            assert (
+              builtins.isInt port
+              || builtins.isString port
+              || port == null
+            ); {
+              inherit serviceName port;
+              ip = hostCfg.ip;
+            }
         )
         hostCfg.services
     )
-    hostList;
+    serverHosts
+  );
 
-  virtualHosts = lib.listToAttrs (lib.flatten virtualHostsList);
+  virtualHosts = lib.listToAttrs (
+    map (
+      service: let
+        isProxmox = service.serviceName == "proxmox";
+
+        upstreamProto =
+          if isProxmox
+          then "https"
+          else "http";
+
+        upstreamPort =
+          if service.port == null || service.port == ""
+          then "80"
+          else toString service.port;
+
+        upstream = "${upstreamProto}://${service.ip}:${upstreamPort}";
+      in {
+        name = "${service.serviceName}.${domain}";
+
+        value = {
+          extraConfig = ''
+            reverse_proxy ${upstream}${lib.optionalString isProxmox ''
+              {
+                transport http {
+                  tls_insecure_skip_verify
+                }
+              }''}
+          '';
+        };
+      }
+    )
+    allServices
+  );
+
+  generatedNames =
+    map (s: "${s.serviceName}.${domain}") allServices;
 in {
   services.caddy = {
     enable = true;
+
+    globalConfig = ''
+      local_certs
+    '';
+
     inherit virtualHosts;
   };
 
   networking.firewall.allowedTCPPorts = [80 443];
 
   environment.systemPackages = with pkgs; [
-    nssTools
     caddy
+    nssTools
     p11-kit
+  ];
+
+  assertions = [
+    {
+      assertion =
+        lib.length generatedNames
+        == lib.length (lib.unique generatedNames);
+
+      message = ''
+        Duplicate service names detected.
+
+        Since hostnames are generated as:
+          <service>.${domain}
+
+        service names must be unique across all hosts.
+      '';
+    }
   ];
 }
