@@ -115,6 +115,13 @@ in {
         };
       };
     };
+
+    lists = [
+      # url = "HTTPS://LINK.txt";
+      # type = "block";
+      # enabled = true;
+      # description = "blocklist";
+    ];
   };
 
   # -----------------------------
@@ -123,13 +130,6 @@ in {
   services.pihole-web = {
     enable = true;
     hostName = "127.0.0.1";
-    ports = ["80"];
+    ports = ["443s"];
   };
-
-  services.lighttpd.extraConfig = ''
-    server.document-root = "/var/www/html"
-    $HTTP["host"] =~ ".*" {
-        server.document-root = "/var/www/html"
-    }
-  '';
 }
