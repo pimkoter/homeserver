@@ -124,31 +124,7 @@ in {
       # description = "blocklist";
       #}
       {
-        url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/advertising.txt";
-        type = "block";
-        enabled = true;
-        description = "blocklist";
-      }
-      {
-        url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/tracking.txt";
-        type = "block";
-        enabled = true;
-        description = "blocklist";
-      }
-      {
-        url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/malicious.txt";
-        type = "block";
-        enabled = true;
-        description = "blocklist";
-      }
-      {
-        url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/suspicious.txt";
-        type = "block";
-        enabled = true;
-        description = "blocklist";
-      }
-      {
-        url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/comprehensive.txt";
+        url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/all_domains.txt";
         type = "block";
         enabled = true;
         description = "blocklist";
