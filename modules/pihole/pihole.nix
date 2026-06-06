@@ -117,13 +117,13 @@ in {
       # -----------------------------
       # Permissions (no recursive chown)
       # -----------------------------
-      chown root:root "$CA_CERT" "$CA_KEY"
-      chmod 600 "$CA_KEY"
-      chmod 644 "$CA_CERT"
+      chown root:root "$CA_CERT" "$CA_KEY" "$CERT" "$KEY" "$COMBINED"
 
-      chown lighttpd:lighttpd "$CERT" "$KEY" "$COMBINED"
-      chmod 600 "$KEY" "$COMBINED"
-      chmod 644 "$CERT"
+      # Sleutels blijven strikt geheim (alleen root mag ze lezen)
+      chmod 600 "$CA_KEY" "$KEY" "$COMBINED"
+
+      # Publieke certificaten mag iedereen (en dus ook lighttpd) inzien
+      chmod 644 "$CA_CERT" "$CERT"
 
       # -----------------------------
       # Runtime CA trust injection
