@@ -18,6 +18,7 @@
         ip = "192.168.178.2";
         services = {
           pihole = "80";
+          cert = "";
         };
       };
       mediamuis = {

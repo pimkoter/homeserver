@@ -42,6 +42,7 @@
   certSANs = [
     "pi.${networkDomain}"
     "pihole.${networkDomain}"
+    "cert.${networkDomain}" # TOEGEVOEGD: Het nieuwe subdomein is nu ook gedekt door TLS
     "localhost"
     "127.0.0.1"
     piholeIp
@@ -92,16 +93,13 @@ in {
       fi
 
       # -----------------------------
-      # Generate certificate if missing
+      # Generate of vernieuw certificaat als SANs zijn gewijzigd
       # -----------------------------
-      if [ ! -f "$CERT" ] || [ ! -f "$KEY" ]; then
-        echo "Generating Pi-hole TLS certificate..."
-
-        mkcert \
-          -cert-file "$CERT" \
-          -key-file "$KEY" \
-          ${lib.concatStringsSep " " certSANs}
-      fi
+      echo "Generating Pi-hole TLS certificate..."
+      mkcert \
+        -cert-file "$CERT" \
+        -key-file "$KEY" \
+        ${lib.concatStringsSep " " certSANs}
 
       # -----------------------------
       # Combined PEM
@@ -115,14 +113,10 @@ in {
       chmod 644 "${publicCaDir}/rootCA.pem"
 
       # -----------------------------
-      # Permissions (no recursive chown)
+      # Permissions
       # -----------------------------
       chown root:root "$CA_CERT" "$CA_KEY" "$CERT" "$KEY" "$COMBINED"
-
-      # Sleutels blijven strikt geheim (alleen root mag ze lezen)
       chmod 600 "$CA_KEY" "$KEY" "$COMBINED"
-
-      # Publieke certificaten mag iedereen (en dus ook lighttpd) inzien
       chmod 644 "$CA_CERT" "$CERT"
 
       # -----------------------------
@@ -137,12 +131,10 @@ in {
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      PrivateTmp = false; # Moet op false staan om de systeembrede trust-store live te mogen updaten
+      PrivateTmp = false;
       ProtectHome = true;
-      ProtectSystem = "true"; # Gewijzigd van "strict" naar "true" om /var schrijfbaar te maken
+      ProtectSystem = "true";
       NoNewPrivileges = true;
-
-      # Geef Systemd expliciet toestemming om in deze specifieke systeemmappen te schrijven
       ReadWritePaths = [
         "/var/lib"
         "/etc/ssl/certs"
@@ -162,13 +154,10 @@ in {
       dns = {
         upstreams = ["127.0.0.1#5335"];
         listeningMode = "all";
-
         domainNeeded = false;
         expandHosts = false;
-
         bogusPriv = true;
         queryLogging = true;
-
         localise = true;
         showDNSSEC = true;
 
@@ -225,7 +214,6 @@ in {
       ntp = {
         ipv4.active = true;
         ipv6.active = true;
-
         sync = {
           active = true;
           server = "pool.ntp.org";
@@ -248,7 +236,6 @@ in {
         maxDBdays = 91;
         DBinterval = 60;
         useWAL = true;
-
         network = {
           parseARPcache = true;
           expire = 91;
@@ -259,7 +246,6 @@ in {
         privacylevel = 0;
         nice = -10;
         normalizeCPU = true;
-
         check = {
           load = true;
           shmem = 90;
@@ -279,26 +265,23 @@ in {
   };
 
   # -----------------------------
-  # Webserver SSL & Alias config
+  # Webserver SSL & Virtual Host config
   # -----------------------------
   services.lighttpd.extraConfig = ''
-    # Koppel het gecombineerde mkcert certificaat aan de HTTPS poort
+    # Koppel het gecombineerde mkcert certificaat aan de globale HTTPS poort
     $SERVER["socket"] == ":443" {
       ssl.engine = "enable"
       ssl.pemfile = "${certDir}/pihole-combined.pem"
     }
 
-    # Geef de /cert URL een eigen scope die de globale Pi-hole rewrites blokkeert
-    $HTTP["url"] =~ "^/cert" {
-      # Dit wist eventuele globale rewrites uit voor deze specifieke URL
-      url.rewrite-once = ()
+    # NIEUW: Een dedicated Virtual Host voor cert.puber
+    $HTTP["host"] == "cert.${networkDomain}" {
+      # Wijs rechtstreeks naar de map met het root-certificaat als root-directory
+      server.document-root = "${publicCaDir}"
 
-      # Koppel de URL direct aan de fysieke public-ca map
-      alias.url = (
-        "/cert" => "${publicCaDir}"
-      )
+      # Schakel directory listing in zodat je alle bestanden ziet als je de site bezoekt
+      dir-listing.activate = "enable"
 
-      # Zorg dat de browser het bestand direct als certificaat herkent en downloadt
       mimetype.assign = (
         ".pem" => "application/x-x509-ca-cert",
         ".crt" => "application/x-x509-ca-cert"
@@ -312,7 +295,6 @@ in {
   systemd.services.lighttpd = {
     wants = ["generate-local-certs.service"];
     after = ["generate-local-certs.service"];
-
     restartTriggers = [
       config.systemd.services.generate-local-certs.script
     ];
