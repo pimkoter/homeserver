@@ -42,7 +42,7 @@
   certSANs = [
     "pi.${networkDomain}"
     "pihole.${networkDomain}"
-    "cert.${networkDomain}" # TOEGEVOEGD: Het nieuwe subdomein is nu ook gedekt door TLS
+    "cert.${networkDomain}" # Het nieuwe subdomein gedekt door TLS
     "localhost"
     "127.0.0.1"
     piholeIp
@@ -274,12 +274,19 @@ in {
       ssl.pemfile = "${certDir}/pihole-combined.pem"
     }
 
-    # NIEUW: Een dedicated Virtual Host voor cert.puber
+    # Dedicated Virtual Host voor cert.puber
     $HTTP["host"] == "cert.${networkDomain}" {
-      # Wijs rechtstreeks naar de map met het root-certificaat als root-directory
+      # Wijs rechtstreeks naar de fysieke map met het CA-certificaat
       server.document-root = "${publicCaDir}"
 
-      # Schakel directory listing in zodat je alle bestanden ziet als je de site bezoekt
+      # Deactiveer ALLE Pi-hole rewrites specifiek binnen dit subdomein
+      url.rewrite-once = ()
+      url.rewrite-final = ()
+
+      # Voorkom dat Lighttpd stiekem zoekt naar de index.php van Pi-hole
+      index-file.names = ( "index.html" )
+
+      # Schakel directory listing in zodat de bestanden direct aanklikbaar zijn
       dir-listing.activate = "enable"
 
       mimetype.assign = (
