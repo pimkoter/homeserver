@@ -302,6 +302,10 @@ in {
   systemd.services.lighttpd = {
     wants = ["generate-local-certs.service"];
     after = ["generate-local-certs.service"];
-    triggeredBy = ["generate-local-certs.service"];
+
+    # Dit is de juiste NixOS manier: herstart lighttpd als de cert-service opnieuw runt/wijzigt
+    restartTriggers = [
+      config.systemd.services.generate-local-certs.script
+    ];
   };
 }
