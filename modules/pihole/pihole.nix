@@ -288,17 +288,17 @@ in {
       ssl.pemfile = "${certDir}/pihole-combined.pem"
     }
 
-    # Voorkom dat de interne Pi-hole rewriter de /cert map kaapt (voorkomt 404)
-    url.rewrite-once = (
-      "^/cert(.*)$" => "$0"
-    )
-
-    # Deel uitsluitend de publieke CA map via /cert
-    alias.url += (
-      "/cert" => "${publicCaDir}"
-    )
-
+    # Geef de /cert URL een eigen scope die de globale Pi-hole rewrites blokkeert
     $HTTP["url"] =~ "^/cert" {
+      # Dit wist eventuele globale rewrites uit voor deze specifieke URL
+      url.rewrite-once = ()
+
+      # Koppel de URL direct aan de fysieke public-ca map
+      alias.url = (
+        "/cert" => "${publicCaDir}"
+      )
+
+      # Zorg dat de browser het bestand direct als certificaat herkent en downloadt
       mimetype.assign = (
         ".pem" => "application/x-x509-ca-cert",
         ".crt" => "application/x-x509-ca-cert"
