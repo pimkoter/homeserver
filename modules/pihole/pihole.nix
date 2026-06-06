@@ -58,7 +58,7 @@ in {
   # CA trust (explicit, reproducible)
   # -----------------------------
   security.pki.certificateFiles = [
-    "${publicCaDir}/rootCA.pem"
+    "/var/lib/pihole-ftl/public-ca/rootCA.pem"
   ];
 
   # -----------------------------
@@ -66,8 +66,10 @@ in {
   # -----------------------------
   systemd.services.generate-local-certs = {
     description = "Generate local Pi-hole TLS certificates";
-    wantedBy = ["multi-user.target"];
-    before = ["lighttpd.service"];
+
+    # We verhuizen dit naar sysinit.target zodat het direct bij de vroege boot runt
+    wantedBy = ["sysinit.target"];
+    before = ["lighttpd.service" "unbound.service"];
 
     path = [
       pkgs.mkcert
