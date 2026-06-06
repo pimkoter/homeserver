@@ -55,21 +55,13 @@ in {
   ];
 
   # -----------------------------
-  # CA trust (explicit, reproducible)
-  # -----------------------------
-  security.pki.certificateFiles = [
-    "/var/lib/pihole-ftl/public-ca/rootCA.pem"
-  ];
-
-  # -----------------------------
   # Certificate generation service
   # -----------------------------
   systemd.services.generate-local-certs = {
     description = "Generate local Pi-hole TLS certificates";
 
-    # We verhuizen dit naar sysinit.target zodat het direct bij de vroege boot runt
-    wantedBy = ["sysinit.target"];
-    before = ["lighttpd.service" "unbound.service"];
+    wantedBy = ["multi-user.target"];
+    before = ["lighttpd.service"];
 
     path = [
       pkgs.mkcert
@@ -132,12 +124,20 @@ in {
       chown lighttpd:lighttpd "$CERT" "$KEY" "$COMBINED"
       chmod 600 "$KEY" "$COMBINED"
       chmod 644 "$CERT"
+
+      # -----------------------------
+      # Runtime CA trust injection
+      # -----------------------------
+      echo "Injecting local CA into system trust store..."
+      mkdir -p /etc/ssl/certs
+      cp "$CA_CERT" /etc/ssl/certs/pihole-local-ca.pem
+      ${pkgs.cacert}/bin/update-ca-certificates || true
     '';
 
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      PrivateTmp = true;
+      PrivateTmp = false; # Moet op false staan om de systeembrede trust-store live te mogen updaten
       ProtectHome = true;
       ProtectSystem = "strict";
       NoNewPrivileges = true;
@@ -269,7 +269,7 @@ in {
   services.pihole-web = {
     enable = true;
     hostName = "pihole.${networkDomain}";
-    ports = ["80r" "443s"]; # 80r dwingt automatische redirect naar HTTPS af
+    ports = ["80r" "443s"];
   };
 
   # -----------------------------
@@ -281,6 +281,11 @@ in {
       ssl.engine = "enable"
       ssl.pemfile = "${certDir}/pihole-combined.pem"
     }
+
+    # Voorkom dat de interne Pi-hole rewriter de /cert map kaapt (voorkomt 404)
+    url.rewrite-once = (
+      "^/cert(.*)$" => "$0"
+    )
 
     # Deel uitsluitend de publieke CA map via /cert
     alias.url += (
@@ -302,7 +307,6 @@ in {
     wants = ["generate-local-certs.service"];
     after = ["generate-local-certs.service"];
 
-    # Dit is de juiste NixOS manier: herstart lighttpd als de cert-service opnieuw runt/wijzigt
     restartTriggers = [
       config.systemd.services.generate-local-certs.script
     ];
