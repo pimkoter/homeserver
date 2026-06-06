@@ -1,61 +1,59 @@
 {
   pkgs,
+  lib,
   hosts,
   ...
-}: {
+}: let
+  hostList = lib.filterAttrs (name: value: lib.isAttrs value && value ? services) hosts;
+  virtualHostsList =
+    lib.mapAttrsToList (
+      hostName: hostCfg:
+        lib.mapAttrsToList (
+          serviceName: port: let
+            isProxmox = serviceName == "proxmox";
+            proto =
+              if isProxmox
+              then "https"
+              else "http";
+
+            extraBlock =
+              if isProxmox
+              then ''
+                transport http {
+                  tls_insecure_skip_verify
+                }
+              ''
+              else "";
+
+            finalPort =
+              if port == ""
+              then "80"
+              else port;
+          in {
+            name = "${serviceName}.${hosts.domain}";
+            value = {
+              extraConfig = ''
+                tls internal
+                reverse_proxy ${proto}://${hostCfg.ip}:${finalPort} ${
+                  if isProxmox
+                  then "{\n${extraBlock}}"
+                  else ""
+                }
+              '';
+            };
+          }
+        )
+        hostCfg.services
+    )
+    hostList;
+
+  virtualHosts = lib.listToAttrs (lib.flatten virtualHostsList);
+in {
   services.caddy = {
     enable = true;
-    virtualHosts = {
-      "pihole.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.pihole.ip}:${hosts.pihole.services.pihole}
-      '';
-
-      "jellyfin.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.jellyfin}
-      '';
-
-      "bazarr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.bazarr}
-      '';
-
-      "seerr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.seerr}
-      '';
-
-      "qbittorrent.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.qbittorrent}
-      '';
-
-      "radarr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.radarr}
-      '';
-
-      "sonarr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.sonarr}
-      '';
-
-      "prowlarr.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy http://${hosts.mediamuis.ip}:${hosts.mediamuis.services.prowlarr}
-      '';
-
-      "proxmox.${hosts.domain}".extraConfig = ''
-        tls internal
-        reverse_proxy https://${hosts.proxmox.ip}:${hosts.proxmox.services.proxmox} {
-          transport http {
-            tls_insecure_skip_verify
-          }
-        }
-      '';
-    };
+    inherit virtualHosts;
   };
+
   networking.firewall.allowedTCPPorts = [80 443];
 
   environment.systemPackages = with pkgs; [
