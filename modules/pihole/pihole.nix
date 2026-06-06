@@ -12,16 +12,16 @@
   # Host generation
   generatePiholeHosts = hostsData: let
     hostsOnly = builtins.removeAttrs hostsData ["domain"];
+    caddyIp = hosts.caddy.ip;
   in
     lib.concatLists (
       lib.mapAttrsToList (
         hostName: hostConfig:
-          assert hostConfig ? ip; let
-            ip = hostConfig.ip;
-            services = hostConfig.services or {};
-          in
-            ["${ip} ${hostName}.${networkDomain}"]
-            ++ map (s: "${ip} ${s}.${networkDomain}") (attrNames services)
+          if hostConfig ? ip
+          then
+            ["${caddyIp} ${hostName}.${networkDomain}"]
+            ++ map (s: "${caddyIp} ${s}.${networkDomain}") (attrNames (hostConfig.services or {}))
+          else []
       )
       hostsOnly
     );
