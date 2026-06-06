@@ -1,6 +1,6 @@
 {
   imports = [
     ./forgejo.nix
-    ./networking.nix
+    ./vaultwarden.nix
   ];
 }
