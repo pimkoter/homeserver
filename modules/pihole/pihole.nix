@@ -1,25 +1,15 @@
 {
-  config,
   pkgs,
   hosts,
   ...
 }: let
   lib = pkgs.lib;
-  inherit (builtins) attrNames removeAttrs;
+  inherit (builtins) attrNames;
 
-  # -----------------------------
-  # Single source of truth
-  # -----------------------------
+  # Domain Declaration
   networkDomain = hosts.domain;
-  baseStateDir = "/var/lib/pihole-ftl";
-  certDir = "${baseStateDir}/certs";
-  caDir = "${baseStateDir}/ca";
-  publicCaDir = "${baseStateDir}/public-ca";
-  piholeIp = hosts.pihole.ip;
 
-  # -----------------------------
-  # Host generation (safer + clearer)
-  # -----------------------------
+  # Host generation
   generatePiholeHosts = hostsData: let
     hostsOnly = builtins.removeAttrs hostsData ["domain"];
   in
@@ -35,121 +25,12 @@
       )
       hostsOnly
     );
-
-  # -----------------------------
-  # Cert subject alternative names
-  # -----------------------------
-  certSANs = [
-    "pi.${networkDomain}"
-    "pihole.${networkDomain}"
-    "cert.${networkDomain}" # Het nieuwe subdomein gedekt door TLS
-    "localhost"
-    "127.0.0.1"
-    piholeIp
-  ];
 in {
-  # -----------------------------
-  # System packages
-  # -----------------------------
-  environment.systemPackages = [
-    pkgs.mkcert
-  ];
-
-  # -----------------------------
-  # Certificate generation service
-  # -----------------------------
-  systemd.services.generate-local-certs = {
-    description = "Generate local Pi-hole TLS certificates";
-
-    wantedBy = ["multi-user.target"];
-    before = ["lighttpd.service"];
-
-    path = [
-      pkgs.mkcert
-      pkgs.coreutils
-      pkgs.nssTools
-    ];
-
-    script = ''
-      set -euo pipefail
-
-      export CAROOT="${caDir}"
-
-      mkdir -p "${caDir}" "${certDir}" "${publicCaDir}"
-
-      CA_CERT="${caDir}/rootCA.pem"
-      CA_KEY="${caDir}/rootCA-key.pem"
-
-      CERT="${certDir}/pihole.crt"
-      KEY="${certDir}/pihole.key"
-      COMBINED="${certDir}/pihole-combined.pem"
-
-      # -----------------------------
-      # Create CA only if missing
-      # -----------------------------
-      if [ ! -f "$CA_CERT" ] || [ ! -f "$CA_KEY" ]; then
-        echo "Creating local mkcert CA..."
-        mkcert -install
-      fi
-
-      # -----------------------------
-      # Generate of vernieuw certificaat als SANs zijn gewijzigd
-      # -----------------------------
-      echo "Generating Pi-hole TLS certificate..."
-      mkcert \
-        -cert-file "$CERT" \
-        -key-file "$KEY" \
-        ${lib.concatStringsSep " " certSANs}
-
-      # -----------------------------
-      # Combined PEM
-      # -----------------------------
-      cat "$CERT" "$KEY" > "$COMBINED"
-
-      # -----------------------------
-      # Publish CA publicly (read-only)
-      # -----------------------------
-      cp "$CA_CERT" "${publicCaDir}/rootCA.pem"
-      chmod 644 "${publicCaDir}/rootCA.pem"
-
-      # -----------------------------
-      # Permissions
-      # -----------------------------
-      chown root:root "$CA_CERT" "$CA_KEY" "$CERT" "$KEY" "$COMBINED"
-      chmod 600 "$CA_KEY" "$KEY" "$COMBINED"
-      chmod 644 "$CA_CERT" "$CERT"
-
-      # -----------------------------
-      # Runtime CA trust injection
-      # -----------------------------
-      echo "Injecting local CA into system trust store..."
-      mkdir -p /etc/ssl/certs
-      cp "$CA_CERT" /etc/ssl/certs/pihole-local-ca.pem
-      ${pkgs.cacert}/bin/update-ca-certificates || true
-    '';
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      PrivateTmp = false;
-      ProtectHome = true;
-      ProtectSystem = "true";
-      NoNewPrivileges = true;
-      ReadWritePaths = [
-        "/var/lib"
-        "/etc/ssl/certs"
-      ];
-    };
-  };
-
-  # -----------------------------
   # Pi-hole FTL
-  # -----------------------------
   services.pihole-ftl = {
     enable = true;
     openFirewallDNS = true;
     openFirewallDHCP = true;
-
     settings = {
       dns = {
         upstreams = ["127.0.0.1#5335"];
@@ -160,47 +41,32 @@ in {
         queryLogging = true;
         localise = true;
         showDNSSEC = true;
-
         hosts = generatePiholeHosts hosts;
-
-        revServers = [
-          {
-            cidr = "192.168.178.0/24";
-            target = "192.168.178.10";
-            domain = "${networkDomain}";
-          }
-        ];
-
         domain = {
           name = networkDomain;
           local = true;
         };
-
         cache = {
           size = 10000;
           optimizer = 3600;
           upstreamBlockedTTL = 86400;
           rrtype = "ANY";
         };
-
         blocking = {
           active = true;
           mode = "NULL";
           edns = "TEXT";
         };
-
         specialDomains = {
           mozillaCanary = true;
           iCloudPrivateRelay = true;
           designatedResolver = true;
         };
-
         rateLimit = {
           burst = 1000;
           windowSeconds = 30;
         };
       };
-
       dhcp = {
         active = true;
         start = "192.168.178.50";
@@ -210,7 +76,6 @@ in {
         ipv6 = true;
         rapidCommit = true;
       };
-
       ntp = {
         ipv4.active = true;
         ipv6.active = true;
@@ -222,7 +87,6 @@ in {
           rtc.utc = true;
         };
       };
-
       resolver = {
         resolveIPv4 = true;
         resolveIPv6 = true;
@@ -230,7 +94,6 @@ in {
         networkNames = true;
         refreshNames = "IPV4_ONLY";
       };
-
       database = {
         DBimport = true;
         maxDBdays = 91;
@@ -241,7 +104,6 @@ in {
           expire = 91;
         };
       };
-
       misc = {
         privacylevel = 0;
         nice = -10;
@@ -256,54 +118,11 @@ in {
   };
 
   # -----------------------------
-  # Pi-hole web UI
+  # Pi-hole web UI (HTTP)
   # -----------------------------
   services.pihole-web = {
     enable = true;
     hostName = "pihole.${networkDomain}";
-    ports = ["80r" "443s"];
-  };
-
-  # -----------------------------
-  # Webserver SSL & Virtual Host config
-  # -----------------------------
-  services.lighttpd.extraConfig = ''
-    # Koppel het gecombineerde mkcert certificaat aan de globale HTTPS poort
-    $SERVER["socket"] == ":443" {
-      ssl.engine = "enable"
-      ssl.pemfile = "${certDir}/pihole-combined.pem"
-    }
-
-    # Dedicated Virtual Host voor cert.puber
-    $HTTP["host"] == "cert.${networkDomain}" {
-      # Wijs rechtstreeks naar de fysieke map met het CA-certificaat
-      server.document-root = "${publicCaDir}"
-
-      # Deactiveer ALLE Pi-hole rewrites specifiek binnen dit subdomein
-      url.rewrite-once = ()
-      url.rewrite-final = ()
-
-      # Voorkom dat Lighttpd stiekem zoekt naar de index.php van Pi-hole
-      index-file.names = ( "index.html" )
-
-      # Schakel directory listing in zodat de bestanden direct aanklikbaar zijn
-      dir-listing.activate = "enable"
-
-      mimetype.assign = (
-        ".pem" => "application/x-x509-ca-cert",
-        ".crt" => "application/x-x509-ca-cert"
-      )
-    }
-  '';
-
-  # -----------------------------
-  # Lighttpd Systemd binding
-  # -----------------------------
-  systemd.services.lighttpd = {
-    wants = ["generate-local-certs.service"];
-    after = ["generate-local-certs.service"];
-    restartTriggers = [
-      config.systemd.services.generate-local-certs.script
-    ];
+    ports = ["80"];
   };
 }
