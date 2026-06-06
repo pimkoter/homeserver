@@ -45,6 +45,13 @@
           proxmox = "8006";
         };
       };
+      datadodo = {
+        ip = "192.168.178.3";
+        services = {
+          vaultwarden = "8222";
+          forgejo = "";
+        };
+      };
     };
     mkHost = name:
       nixpkgs.lib.nixosSystem {
