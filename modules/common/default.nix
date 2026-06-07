@@ -1,7 +1,8 @@
 {
   imports = [
+    ./autoUpgrade.nix
     ./common.nix
-    ./hardware-configuration.nix
+    ./hardWareConfig.nix
     ./networking.nix
   ];
 }

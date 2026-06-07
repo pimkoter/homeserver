@@ -26,7 +26,7 @@
 
   networking = {
     hostName = lib.mkDefault name;
-    networkmanager.enable = lib.mkDefault true;
+    networkmanager.enable = lib.mkDefault false;
     firewall = {
       enable = true;
       trustedInterfaces = ["tailscale0"];
@@ -77,8 +77,8 @@
       la = "ls -al";
       gens = "sudo nix-env -p /nix/var/nix/profiles/system --list-generations";
       ncg = "nix-collect-garbage --delete-old && sudo nix-collect-garbage -d && sudo /run/current-system/bin/switch-to-configuration boot";
-      upgrade = "cd ~/homeserver && git pull origin main && sudo nixos-rebuild switch --flake .#${name}";
-      test = "cd ~/homeserver && git pull origin test && sudo nixos-rebuild switch --flake .#${name}";
+      upgrade = "cd ${admin.flakeDir} && git pull origin main && sudo nixos-rebuild switch --flake .#${name}";
+      test = "cd ${admin.flakeDir} && git pull origin test && sudo nixos-rebuild switch --flake .#${name}";
     };
   };
 

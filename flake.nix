@@ -10,26 +10,27 @@
     admin = {
       name = "pim";
       pswd = "$6$VrOHvIFjn6HTuxUz$5gp2v0XFmRRx4eOv.X1EDiPXGyUD/OKYVByhUK609iuIZsxzW9l0fkbxmo9w1SNCzxbSD0DAj0gUeNQOSQwJX/";
+      flakeDir = "/home/${admin.name}/homeserver";
+      gitChannel = "github:pimkoter/homeserver";
     };
 
     hosts = {
       domain = "puber";
-      pihole = {
+      piHole = {
         ip = "192.168.178.2";
         services = {
-          pihole = "80";
-          cert = "";
+          piHole = "80";
         };
       };
-      mediamuis = {
+      mediaMuis = {
         ip = "192.168.178.4";
         services = {
-          jellyfin = "8096";
+          jellyFin = "8096";
           seerr = "5055";
           bazarr = "6767";
           radarr = "7878";
           sonarr = "8989";
-          qbittorrent = "8080";
+          qBitTorrent = "8080";
           prowlarr = "9696";
           immich = "2283";
         };
@@ -37,20 +38,20 @@
       caddy = {
         ip = "192.168.178.8";
       };
-      exitnode = {
+      exitNode = {
         ip = "192.168.178.9";
       };
-      proxmox = {
+      proxMox = {
         ip = "192.168.178.10";
         services = {
-          proxmox = "8006";
+          proxMox = "8006";
         };
       };
-      datadodo = {
+      dataDodo = {
         ip = "192.168.178.3";
         services = {
-          vaultwarden = "8222";
-          forgejo = "";
+          vaultWarden = "8222";
+          forgeJo = "";
         };
       };
     };

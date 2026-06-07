@@ -1,5 +1,5 @@
 {
   imports = [
-    ./exitnode.nix
+    ./nextCloud.nix
   ];
 }
