@@ -22,7 +22,7 @@ in {
   networking = {
     useDHCP = false;
     nameservers = [
-      hosts.pihole.ip
+      hosts.piHole.ip
     ];
 
     networkmanager.enable = false;
