@@ -3,6 +3,7 @@
   name,
   host,
   hosts,
+  admin,
   ...
 }: let
   network = {
@@ -16,6 +17,9 @@ in {
     resolved.enable = lib.mkForce false;
     tailscale = {
       enable = true;
+      extraUpFlags = [ 
+        "--operator=${admin.user}";
+      ]
     };
   };
 

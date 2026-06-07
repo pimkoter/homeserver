@@ -17,8 +17,14 @@
   };
 
   fileSystems."/" = {
+    device = "tmpfs";
+    fsType = "tmpfs";
+    options = ["defaults" "size=2G" "mode=755"];
+  };
+  fileSystems."/preservation" = {
     device = "/dev/disk/by-uuid/ce95706f-816c-4b8e-add5-7836609b29ba";
     fsType = "ext4";
+    neededForBoot = true;
   };
 
   swapDevices = [];

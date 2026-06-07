@@ -3,9 +3,17 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    preservation = {
+      url = "github:nix-community/preservation";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = {nixpkgs, ...}: let
+  outputs = {nixpkgs, ...} @ inputs: let
     defaultSystem = "x86_64-linux";
     admin = {
       name = "pim";
@@ -67,6 +75,8 @@
         modules = [
           ./modules/common/default.nix
           ./modules/${name}/default.nix
+          inputs.preservation.nixosModules.default
+          inputs.disko.nixosModules.disko
         ];
       };
   in {
