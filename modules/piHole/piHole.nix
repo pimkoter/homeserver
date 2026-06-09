@@ -118,12 +118,12 @@ in {
 
     lists = [
       # Lists can be added via URL
-      {
-        url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/all_domains.txt";
-        type = "block";
-        enabled = true;
-        description = "ZachLagden Blocklist";
-      }
+      #{
+      #  url = "https://media.githubusercontent.com/media/zachlagden/Pi-hole-Optimized-Blocklists/main/lists/all_domains.txt";
+      #  type = "block";
+      #  enabled = true;
+      #  description = "ZachLagden Blocklist";
+      #}
     ];
   };
 
